@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+  "net/url"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -18,6 +19,7 @@ const (
 var (
 	// ErrMissingAPIKey is returned when the API key is not found.
 	ErrMissingAPIKey = fmt.Errorf("API key not found")
+  ErrMissingCity = fmt.Errorf("Please provided a city")
 )
 
 // City represents the city name.
@@ -85,9 +87,10 @@ func getAPIKey() (string, error) {
 // It returns the city name as a City and any error that occurred.
 func getCity() (City, error) {
 	if len(os.Args) < 2 {
-		return "", fmt.Errorf("city name not provided")
+		return "", fmt.Errorf("%w", ErrMissingCity)
 	}
-	return City(os.Args[1]), nil
+  city := url.QueryEscape(os.Args[1])
+	return City(city), nil
 }
 
 func main() {
