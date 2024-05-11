@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-  "net/url"
+	"net/url"
 	"os"
 
 	"github.com/joho/godotenv"
