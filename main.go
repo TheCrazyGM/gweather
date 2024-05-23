@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -27,60 +28,64 @@ type (
 	// Temperature represents a temperature value.
 	Temperature float64
 	// Status represents the weather status.
-	Status string
 )
+type WeatherData struct {
+	Cod     int           `json:"cod"`
+	Main    MainData      `json:"main"`
+	Weather []WeatherInfo `json:"weather"`
+}
 
-// getWeatherData retrieves weather data from the OpenWeatherMap API.
-func getWeatherData(apiKey, city, units string) (map[string]interface{}, error) {
-	url := fmt.Sprintf("%s?q=%s&appid=%s&units=%s", baseURL, city, apiKey, units)
+type MainData struct {
+	Temp float64 `json:"temp"`
+}
+
+type WeatherInfo struct {
+	MainStatus Status `json:"main"`
+}
+
+type Status string
+
+func getWeatherData(apiKey, city, units string) (*WeatherData, error) {
+	url := fmt.Sprintf("%s?q=%s&appid=%s&units=%s", baseURL, city, apiKey,
+		units)
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch weather data: %w", err)
 	}
 	defer resp.Body.Close()
 
-	var weatherData map[string]interface{}
-	if err := json.NewDecoder(resp.Body).Decode(&weatherData); err != nil {
-		return nil, fmt.Errorf("failed to decode weather data: %w", err)
+	var weatherData WeatherData
+	dec := json.NewDecoder(resp.Body)
+
+	// Use the Decode method to iterate over the JSON objects until an error occurs.
+	for {
+		if err := dec.Decode(&weatherData); err == io.EOF {
+			break // Break the loop if there is no more data.
+		} else if err != nil {
+			return nil, fmt.Errorf("failed to decode weather data: %w", err)
+		}
 	}
 
-	if cod, ok := weatherData["cod"].(float64); !ok || cod != 200 {
+	if weatherData.Cod != 200 {
 		return nil, fmt.Errorf("failed to retrieve weather data: invalid response code")
 	}
 
-	return weatherData, nil
+	return &weatherData, nil
 }
 
-// getCurrentTemperature retrieves the current temperature from the weather data.
-func getCurrentTemperature(weatherData map[string]interface{}) (Temperature, error) {
-	main, ok := weatherData["main"].(map[string]interface{})
-	if !ok {
-		return 0, fmt.Errorf("failed to retrieve temperature: invalid main data")
-	}
-
-	temp, ok := main["temp"].(float64)
-	if !ok {
-		return 0, fmt.Errorf("failed to retrieve temperature: invalid temperature data")
-	}
-
+func getCurrentTemperature(weatherData *WeatherData) (Temperature, error) {
+	temp := weatherData.Main.Temp
 	return Temperature(temp), nil
 }
 
-// getWeatherStatus retrieves the current weather status from the weather data.
-func getWeatherStatus(weatherData map[string]interface{}) (Status, error) {
-	weather, ok := weatherData["weather"].([]interface{})
-	if !ok || len(weather) == 0 {
-		return "", fmt.Errorf("failed to retrieve status: invalid weather data")
+func getWeatherStatus(weatherData *WeatherData) (Status, error) {
+	status := ""
+	for _, weather := range weatherData.Weather {
+		status = string(weather.MainStatus)
 	}
 
-	first, ok := weather[0].(map[string]interface{})
-	if !ok {
-		return "", fmt.Errorf("failed to retrieve current status: invalid status data")
-	}
-
-	status, ok := first["main"].(string)
-	if !ok {
-		return "", fmt.Errorf("failed to retrieve current status: invalid status data")
+	if status == "" {
+		return "", fmt.Errorf("failed to retrieve status: invalid status data")
 	}
 
 	return Status(status), nil
