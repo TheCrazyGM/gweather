@@ -27,6 +27,7 @@ type City string
 
 // Temperature represents the temperature in Fahrenheit.
 type Temperature float64
+type Status string
 
 // getWeatherData retrieves the weather data from the OpenWeatherMap API.
 // It takes the API key, city name, and units as input, and returns the
@@ -68,9 +69,33 @@ func getCurrentTemperature(weatherData map[string]interface{}) (Temperature, err
 	return Temperature(temp), nil
 }
 
+// Get the current status from weather.main from the API
+func getWeatherStatus(weatherData map[string]interface{}) (Status, error) {
+    if cod, ok := weatherData["cod"].(float64); !ok || cod != 200 {
+        return "", fmt.Errorf("failed to retrieve temperature: invalid response code")
+    }
+
+    weather, ok := weatherData["weather"].([]interface{})
+    if !ok || len(weather) == 0 {
+        return "", fmt.Errorf("failed to retrieve status: invalid weather data")
+    }
+
+    first, ok := weather[0].(map[string]interface{})
+    if !ok {
+        return "", fmt.Errorf("failed to retrieve current status: invalid status data")
+    }
+
+    status, ok := first["main"].(string)
+    if !ok {
+        return "", fmt.Errorf("failed to retrieve current status: invalid status data")
+    }
+
+    return Status(status), nil
+}
+
 // displayTemperature prints the temperature.
-func displayTemperature(temperature Temperature) {
-	fmt.Printf("%.2f°F\n", temperature)
+func displayTemperature(temperature Temperature, weatherStatus Status) {
+	fmt.Printf("%.2f°F (%s)\n", temperature, weatherStatus)
 }
 
 // getAPIKey retrieves the API key from the environment.
@@ -125,7 +150,13 @@ func main() {
 		fmt.Println("Error:", err)
 		return
 	}
+  // Get weather status
+  weatherStatus, err := getWeatherStatus(weatherData)
+  if err != nil {
+    fmt.Println("Error:", err)
+    return
+  }
 
 	// Display the current temperature
-	displayTemperature(temperature)
+	displayTemperature(temperature, weatherStatus)
 }
