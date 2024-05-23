@@ -93,8 +93,8 @@ func getWeatherStatus(weatherData map[string]interface{}) (Status, error) {
     return Status(status), nil
 }
 
-// displayTemperature prints the temperature.
-func displayTemperature(temperature Temperature, weatherStatus Status) {
+//displayWeather prints the temperature and status.
+func displayWeather(temperature Temperature, weatherStatus Status) {
 	fmt.Printf("%.2f°F (%s)\n", temperature, weatherStatus)
 }
 
@@ -157,6 +157,6 @@ func main() {
     return
   }
 
-	// Display the current temperature
-	displayTemperature(temperature, weatherStatus)
+	// Display the current temperature and status to the user
+	displayWeather(temperature, weatherStatus)
 }
