@@ -8,6 +8,22 @@ import (
 	"github.com/joho/godotenv"
 )
 
+func getAPIKey() (string, error) {
+	apiKey, ok := os.LookupEnv("OPENWEATHER_API_KEY")
+	if !ok {
+		return "", fmt.Errorf("%w", ErrMissingAPIKey)
+	}
+	return apiKey, nil
+}
+
+func getCity() (City, error) {
+	if len(os.Args) < 2 {
+		return "", fmt.Errorf("%w", ErrMissingCity)
+	}
+	city := url.QueryEscape(os.Args[1])
+	return City(city), nil
+}
+
 func main() {
 	godotenv.Load()
 
@@ -43,20 +59,4 @@ func main() {
 	}
 
 	displayWeather(temperature, weatherStatus)
-}
-
-func getAPIKey() (string, error) {
-	apiKey, ok := os.LookupEnv("OPENWEATHER_API_KEY")
-	if !ok {
-		return "", fmt.Errorf("%w", ErrMissingAPIKey)
-	}
-	return apiKey, nil
-}
-
-func getCity() (City, error) {
-	if len(os.Args) < 2 {
-		return "", fmt.Errorf("%w", ErrMissingCity)
-	}
-	city := url.QueryEscape(os.Args[1])
-	return City(city), nil
 }
