@@ -78,5 +78,5 @@ func getWeatherStatus(weatherData *WeatherData) (Status, error) {
 }
 
 func displayWeather(temperature Temperature, weatherStatus Status) {
-	fmt.Printf("%.2f°F (%s)\n", temperature, weatherStatus)
+	fmt.Printf("%.1f°F (%s)\n", temperature, weatherStatus)
 }
