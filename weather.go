@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 )
 
@@ -41,19 +40,13 @@ func getWeatherData(apiKey, city, units string) (*WeatherData, error) {
 	}
 	defer resp.Body.Close()
 
-	var weatherData WeatherData
-	dec := json.NewDecoder(resp.Body)
-
-	for {
-		if err := dec.Decode(&weatherData); err == io.EOF {
-			break
-		} else if err != nil {
-			return nil, fmt.Errorf("failed to decode weather data: %w", err)
-		}
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("failed to retrieve weather data: %s", resp.Status)
 	}
 
-	if weatherData.Cod != 200 {
-		return nil, fmt.Errorf("failed to retrieve weather data: invalid response code")
+	var weatherData WeatherData
+	if err := json.NewDecoder(resp.Body).Decode(&weatherData); err != nil {
+		return nil, fmt.Errorf("failed to decode weather data: %w", err)
 	}
 
 	return &weatherData, nil

@@ -18,9 +18,12 @@ func getAPIKey() (string, error) {
 
 func getCity() (City, error) {
 	if len(os.Args) < 2 {
-		return "", fmt.Errorf("%w", ErrMissingCity)
+		return "", fmt.Errorf("%w: please provide a city name", ErrMissingCity)
 	}
 	city := url.QueryEscape(os.Args[1])
+	if city == "" {
+		return "", fmt.Errorf("%w: city name cannot be empty", ErrMissingCity)
+	}
 	return City(city), nil
 }
 
