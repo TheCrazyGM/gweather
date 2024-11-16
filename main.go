@@ -6,60 +6,47 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
+	"github.com/spf13/cobra"
 )
-
-func getAPIKey() (string, error) {
-	apiKey, ok := os.LookupEnv("OPENWEATHER_API_KEY")
-	if !ok {
-		return "", fmt.Errorf("%w", ErrMissingAPIKey)
-	}
-	return apiKey, nil
-}
-
-func getCity() (City, error) {
-	if len(os.Args) < 2 {
-		return "", fmt.Errorf("%w: please provide a city name", ErrMissingCity)
-	}
-	city := url.QueryEscape(os.Args[1])
-	if city == "" {
-		return "", fmt.Errorf("%w: city name cannot be empty", ErrMissingCity)
-	}
-	return City(city), nil
-}
 
 func main() {
 	godotenv.Load()
 
-	apiKey, err := getAPIKey()
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
+	var metric bool
+	cmd := &cobra.Command{
+		Use:   "weather [city]",
+		Short: "Get the current weather for a specified city",
+		Args:  cobra.ExactArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			apiKey := os.Getenv("OPENWEATHER_API_KEY")
+			if apiKey == "" {
+				fmt.Println("Error: missing API key")
+				os.Exit(1)
+			}
+
+			city := url.QueryEscape(args[0])
+			units := "imperial"
+			if metric {
+				units = "metric"
+			}
+
+			temp, status, err := getWeather(apiKey, city, units)
+			if err != nil {
+				fmt.Printf("Error: %v\n", err)
+				os.Exit(1)
+			}
+
+			unit := "F"
+			if metric {
+				unit = "C"
+			}
+			fmt.Printf("%.1f°%s (%s)\n", temp, unit, status)
+		},
 	}
 
-	city, err := getCity()
-	if err != nil {
+	cmd.Flags().BoolVarP(&metric, "metric", "m", false, "Use metric units (default is imperial)")
+	if err := cmd.Execute(); err != nil {
 		fmt.Println("Error:", err)
-		return
+		os.Exit(1)
 	}
-	units := "imperial"
-
-	weatherData, err := getWeatherData(apiKey, string(city), units)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-
-	temperature, err := getCurrentTemperature(weatherData)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-
-	weatherStatus, err := getWeatherStatus(weatherData)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-
-	displayWeather(temperature, weatherStatus)
 }

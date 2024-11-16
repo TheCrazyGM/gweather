@@ -6,70 +6,38 @@ import (
 	"net/http"
 )
 
-const (
-	baseURL = "http://api.openweathermap.org/data/2.5/weather"
-)
+const baseURL = "http://api.openweathermap.org/data/2.5/weather"
 
-var (
-	ErrMissingAPIKey = fmt.Errorf("API key not found")
-	ErrMissingCity   = fmt.Errorf("please provide a city")
-)
-
-type (
-	City        string
-	Temperature float64
-	Status      string
-	WeatherData struct {
-		Cod     int           `json:"cod"`
-		Main    MainData      `json:"main"`
-		Weather []WeatherInfo `json:"weather"`
-	}
-	MainData struct {
+type WeatherData struct {
+	Main struct {
 		Temp float64 `json:"temp"`
-	}
-	WeatherInfo struct {
-		MainStatus Status `json:"main"`
-	}
-)
+	} `json:"main"`
+	Weather []struct {
+		Main string `json:"main"`
+	} `json:"weather"`
+}
 
-func getWeatherData(apiKey, city, units string) (*WeatherData, error) {
+func getWeather(apiKey, city, units string) (float64, string, error) {
 	url := fmt.Sprintf("%s?q=%s&appid=%s&units=%s", baseURL, city, apiKey, units)
 	resp, err := http.Get(url)
 	if err != nil {
-		return nil, fmt.Errorf("failed to fetch weather data: %w", err)
+		return 0, "", fmt.Errorf("failed to fetch weather: %w", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("failed to retrieve weather data: %s", resp.Status)
+		return 0, "", fmt.Errorf("api error: %s", resp.Status)
 	}
 
-	var weatherData WeatherData
-	if err := json.NewDecoder(resp.Body).Decode(&weatherData); err != nil {
-		return nil, fmt.Errorf("failed to decode weather data: %w", err)
+	var data WeatherData
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		return 0, "", fmt.Errorf("invalid response: %w", err)
 	}
 
-	return &weatherData, nil
-}
-
-func getCurrentTemperature(weatherData *WeatherData) (Temperature, error) {
-	temp := weatherData.Main.Temp
-	return Temperature(temp), nil
-}
-
-func getWeatherStatus(weatherData *WeatherData) (Status, error) {
 	status := ""
-	for _, weather := range weatherData.Weather {
-		status = string(weather.MainStatus)
+	if len(data.Weather) > 0 {
+		status = data.Weather[0].Main
 	}
 
-	if status == "" {
-		return "", fmt.Errorf("failed to retrieve status: invalid status data")
-	}
-
-	return Status(status), nil
-}
-
-func displayWeather(temperature Temperature, weatherStatus Status) {
-	fmt.Printf("%.1f°F (%s)\n", temperature, weatherStatus)
+	return data.Main.Temp, status, nil
 }
