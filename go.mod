@@ -1,4 +1,4 @@
-module gweather
+module github.com/thecrazygm/gweather
 
 go 1.23.2
 
