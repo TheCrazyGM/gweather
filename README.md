@@ -1,6 +1,6 @@
 # Weather App
 
-This is a simple weather app written in Go that retrieves the current temperature of a city using the OpenWeatherMap API.
+This is a command-line weather app written in Go that retrieves the current temperature and weather conditions of a city using the OpenWeatherMap API.
 
 ## Prerequisites
 
@@ -40,12 +40,28 @@ Before running the app, make sure you have the following:
 To use the app, run the following command:
 
 ```
-./gweather <city-name>
+./gweather [city-name]
 ```
 
-Replace `<city-name>` with the name of the city you want to get the weather for.
+Replace `[city-name]` with the name of the city you want to get the weather for.
 
-The app will retrieve the current temperature for the specified city and display it in Fahrenheit.
+### Options
+
+- `-m, --metric`: Display temperature in Celsius (default is Fahrenheit)
+
+### Examples
+
+Get weather in Fahrenheit:
+```
+./gweather "New York"
+```
+
+Get weather in Celsius:
+```
+./gweather -m "London"
+```
+
+The app will display the current temperature and weather conditions (e.g., Clear, Cloudy, Rain) for the specified city.
 
 ## License
 
