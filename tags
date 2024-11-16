@@ -9,26 +9,11 @@
 !_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
 !_TAG_PROGRAM_VERSION	5.9.0	//
-City	weather.go	/^	City        string$/;"	t	package:main	typeref:typename:string
-Cod	weather.go	/^		Cod     int           `json:"cod"`$/;"	m	struct:main.WeatherData	typeref:typename:int
-ErrMissingAPIKey	weather.go	/^	ErrMissingAPIKey = fmt.Errorf("API key not found")$/;"	v	package:main
-ErrMissingCity	weather.go	/^	ErrMissingCity   = fmt.Errorf("please provide a city")$/;"	v	package:main
-Main	weather.go	/^		Main    MainData      `json:"main"`$/;"	m	struct:main.WeatherData	typeref:typename:MainData
-MainData	weather.go	/^	MainData struct {$/;"	s	package:main
-MainStatus	weather.go	/^		MainStatus Status `json:"main"`$/;"	m	struct:main.WeatherInfo	typeref:typename:Status
-Status	weather.go	/^	Status      string$/;"	t	package:main	typeref:typename:string
-Temp	weather.go	/^		Temp float64 `json:"temp"`$/;"	m	struct:main.MainData	typeref:typename:float64
-Temperature	weather.go	/^	Temperature float64$/;"	t	package:main	typeref:typename:float64
-Weather	weather.go	/^		Weather []WeatherInfo `json:"weather"`$/;"	m	struct:main.WeatherData	typeref:typename:[]WeatherInfo
-WeatherData	weather.go	/^	WeatherData struct {$/;"	s	package:main
-WeatherInfo	weather.go	/^	WeatherInfo struct {$/;"	s	package:main
-baseURL	weather.go	/^	baseURL = "http:\/\/api.openweathermap.org\/data\/2.5\/weather"$/;"	c	package:main
-displayWeather	weather.go	/^func displayWeather(temperature Temperature, weatherStatus Status) {$/;"	f	package:main
-getAPIKey	main.go	/^func getAPIKey() (string, error) {$/;"	f	package:main	typeref:typename:(string, error)
-getCity	main.go	/^func getCity() (City, error) {$/;"	f	package:main	typeref:typename:(City, error)
-getCurrentTemperature	weather.go	/^func getCurrentTemperature(weatherData *WeatherData) (Temperature, error) {$/;"	f	package:main	typeref:typename:(Temperature, error)
-getWeatherData	weather.go	/^func getWeatherData(apiKey, city, units string) (*WeatherData, error) {$/;"	f	package:main	typeref:typename:(*WeatherData, error)
-getWeatherStatus	weather.go	/^func getWeatherStatus(weatherData *WeatherData) (Status, error) {$/;"	f	package:main	typeref:typename:(Status, error)
+Main	weather.go	/^	Main struct {$/;"	m	struct:main.WeatherData	typeref:typename:struct { Temp float64 `json:"temp"`; }
+Weather	weather.go	/^	Weather []struct {$/;"	m	struct:main.WeatherData	typeref:typename:[]struct { Main string `json:"main"`; }
+WeatherData	weather.go	/^type WeatherData struct {$/;"	s	package:main
+baseURL	weather.go	/^const baseURL = "http:\/\/api.openweathermap.org\/data\/2.5\/weather"$/;"	c	package:main
+getWeather	weather.go	/^func getWeather(apiKey, city, units string) (float64, string, error) {$/;"	f	package:main	typeref:typename:(float64, string, error)
 main	main.go	/^func main() {$/;"	f	package:main
 main	main.go	/^package main$/;"	p
 main	weather.go	/^package main$/;"	p
