@@ -13,7 +13,7 @@ type WeatherData struct {
 		Temp float64 `json:"temp"`
 	} `json:"main"`
 	Weather []struct {
-		Main string `json:"main"`
+		Description string `json:"description"`
 	} `json:"weather"`
 }
 
@@ -36,7 +36,7 @@ func getWeather(apiKey, city, units string) (float64, string, error) {
 
 	status := ""
 	if len(data.Weather) > 0 {
-		status = data.Weather[0].Main
+		status = data.Weather[0].Description
 	}
 
 	return data.Main.Temp, status, nil
