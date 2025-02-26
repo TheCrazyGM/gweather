@@ -40,7 +40,7 @@ func main() {
 			if metric {
 				unit = "C"
 			}
-			fmt.Printf("%.1f°%s (%s)\n", temp, unit, status)
+			fmt.Printf("%.1f°%s [ %s ]\n", temp, unit, status)
 		},
 	}
 
