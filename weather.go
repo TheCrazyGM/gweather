@@ -6,7 +6,8 @@ import (
 	"net/http"
 )
 
-const baseURL = "http://api.openweathermap.org/data/2.5/weather"
+// Make this a variable instead of constant for testing purposes
+var baseURL = "http://api.openweathermap.org/data/2.5/weather"
 
 type WeatherData struct {
 	Main struct {
@@ -17,7 +18,8 @@ type WeatherData struct {
 	} `json:"weather"`
 }
 
-func getWeather(apiKey, city, units string) (float64, string, error) {
+// Make this variable so it can be mocked in tests
+var getWeather = func(apiKey, city, units string) (float64, string, error) {
 	url := fmt.Sprintf("%s?q=%s&appid=%s&units=%s", baseURL, city, apiKey, units)
 	resp, err := http.Get(url)
 	if err != nil {
