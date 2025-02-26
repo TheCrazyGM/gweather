@@ -10,10 +10,18 @@
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
 !_TAG_PROGRAM_VERSION	5.9.0	//
 Main	weather.go	/^	Main struct {$/;"	m	struct:main.WeatherData	typeref:typename:struct { Temp float64 `json:"temp"`; }
-Weather	weather.go	/^	Weather []struct {$/;"	m	struct:main.WeatherData	typeref:typename:[]struct { Main string `json:"main"`; }
+TestCmdArgsValidation	main_test.go	/^func TestCmdArgsValidation(t *testing.T) {$/;"	f	package:main
+TestGetWeather	weather_test.go	/^func TestGetWeather(t *testing.T) {$/;"	f	package:main
+TestGetWeatherNetworkError	weather_test.go	/^func TestGetWeatherNetworkError(t *testing.T) {$/;"	f	package:main
+TestMetricFlag	main_test.go	/^func TestMetricFlag(t *testing.T) {$/;"	f	package:main
+TestMissingAPIKey	main_test.go	/^func TestMissingAPIKey(t *testing.T) {$/;"	f	package:main
+Weather	weather.go	/^	Weather []struct {$/;"	m	struct:main.WeatherData	typeref:typename:[]struct { Description string `json:"description"`; }
 WeatherData	weather.go	/^type WeatherData struct {$/;"	s	package:main
-baseURL	weather.go	/^const baseURL = "http:\/\/api.openweathermap.org\/data\/2.5\/weather"$/;"	c	package:main
-getWeather	weather.go	/^func getWeather(apiKey, city, units string) (float64, string, error) {$/;"	f	package:main	typeref:typename:(float64, string, error)
+baseURL	weather.go	/^var baseURL = "http:\/\/api.openweathermap.org\/data\/2.5\/weather"$/;"	v	package:main
+executeCommand	main_test.go	/^func executeCommand(cmd *cobra.Command, args ...string) (string, error) {$/;"	f	package:main	typeref:typename:(string, error)
+getWeather	weather.go	/^var getWeather = func(apiKey, city, units string) (float64, string, error) {$/;"	v	package:main
 main	main.go	/^func main() {$/;"	f	package:main
 main	main.go	/^package main$/;"	p
+main	main_test.go	/^package main$/;"	p
 main	weather.go	/^package main$/;"	p
+main	weather_test.go	/^package main$/;"	p
