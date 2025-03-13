@@ -73,7 +73,7 @@ func TestMetricFlag(t *testing.T) {
 		if city != "TestCity" {
 			t.Errorf("Expected city 'TestCity', got '%s'", city)
 		}
-		
+
 		// Return different temperature based on units
 		if units == "metric" {
 			return 20.0, "sunny", nil // Celsius
@@ -124,9 +124,9 @@ func TestMetricFlag(t *testing.T) {
 					if metric {
 						units = "metric"
 					}
-					
+
 					temp, status, _ := getWeather("test-api-key", city, units)
-					
+
 					unit := "F"
 					if metric {
 						unit = "C"
@@ -134,17 +134,17 @@ func TestMetricFlag(t *testing.T) {
 					cmd.Printf("%.1f°%s [ %s ]\n", temp, unit, status)
 				},
 			}
-			
+
 			cmd.Flags().BoolVarP(&metric, "metric", "m", false, "Use metric units")
-			
+
 			output, err := executeCommand(cmd, tt.args...)
 			if err != nil {
 				t.Errorf("Command execution error = %v", err)
 				return
 			}
-			
+
 			if !strings.Contains(output, tt.wantContain) {
-				t.Errorf("Output does not contain expected string.\nWanted: %s\nGot: %s", 
+				t.Errorf("Output does not contain expected string.\nWanted: %s\nGot: %s",
 					tt.wantContain, output)
 			}
 		})
@@ -155,10 +155,10 @@ func TestMissingAPIKey(t *testing.T) {
 	// Save environment variable
 	origAPIKey := os.Getenv("OPENWEATHER_API_KEY")
 	defer os.Setenv("OPENWEATHER_API_KEY", origAPIKey)
-	
+
 	// Clear API key for this test
 	os.Setenv("OPENWEATHER_API_KEY", "")
-	
+
 	var metric bool
 	cmd := &cobra.Command{
 		Use:   "weather [city]",
@@ -170,15 +170,15 @@ func TestMissingAPIKey(t *testing.T) {
 				cmd.PrintErrln("Error: missing API key")
 				return
 			}
-			
+
 			city := args[0]
 			units := "imperial"
 			if metric {
 				units = "metric"
 			}
-			
+
 			temp, status, _ := getWeather(apiKey, city, units)
-			
+
 			unit := "F"
 			if metric {
 				unit = "C"
@@ -186,11 +186,11 @@ func TestMissingAPIKey(t *testing.T) {
 			cmd.Printf("%.1f°%s [ %s ]\n", temp, unit, status)
 		},
 	}
-	
+
 	cmd.Flags().BoolVarP(&metric, "metric", "m", false, "Use metric units")
-	
+
 	output, _ := executeCommand(cmd, "London")
-	
+
 	if !strings.Contains(output, "missing API key") {
 		t.Errorf("Expected error about missing API key, got: %s", output)
 	}
