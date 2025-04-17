@@ -23,10 +23,17 @@ Before running the app, make sure you have the following:
    cd gweather
    ```
 
-3. Create a `.env` file and add your OpenWeatherMap API key:
+
+3. (Optional) Create a `.env` file and add your OpenWeatherMap API key (or set the environment variable directly):
 
    ```
    OPENWEATHER_API_KEY=your-api-key
+   ```
+
+   If you prefer not to use a `.env` file, set the API key in your shell instead:
+
+   ```bash
+   export OPENWEATHER_API_KEY=your-api-key
    ```
 
 4. Build the app:
@@ -48,6 +55,8 @@ Replace `[city-name]` with the name of the city you want to get the weather for.
 ### Options
 
 - `-m, --metric`: Display temperature in Celsius (default is Fahrenheit)
+
+Note: API requests will time out after 10 seconds if the server does not respond.
 
 ### Examples
 

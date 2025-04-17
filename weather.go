@@ -1,13 +1,17 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"net/http"
+   "encoding/json"
+   "fmt"
+   "net/http"
+   "time"
 )
 
 // Make this a variable instead of constant for testing purposes
 var baseURL = "http://api.openweathermap.org/data/2.5/weather"
+
+// httpClient allows setting a timeout and is overridable in tests
+var httpClient = &http.Client{Timeout: 10 * time.Second}
 
 type WeatherData struct {
 	Main struct {
@@ -19,9 +23,11 @@ type WeatherData struct {
 }
 
 // Make this variable so it can be mocked in tests
+// getWeather retrieves the temperature and weather description for a city
+// using the configured baseURL and httpClient.
 var getWeather = func(apiKey, city, units string) (float64, string, error) {
-	url := fmt.Sprintf("%s?q=%s&appid=%s&units=%s", baseURL, city, apiKey, units)
-	resp, err := http.Get(url)
+   url := fmt.Sprintf("%s?q=%s&appid=%s&units=%s", baseURL, city, apiKey, units)
+   resp, err := httpClient.Get(url)
 	if err != nil {
 		return 0, "", fmt.Errorf("failed to fetch weather: %w", err)
 	}
