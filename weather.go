@@ -1,10 +1,10 @@
 package main
 
 import (
-   "encoding/json"
-   "fmt"
-   "net/http"
-   "time"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"time"
 )
 
 // Make this a variable instead of constant for testing purposes
@@ -26,8 +26,8 @@ type WeatherData struct {
 // getWeather retrieves the temperature and weather description for a city
 // using the configured baseURL and httpClient.
 var getWeather = func(apiKey, city, units string) (float64, string, error) {
-   url := fmt.Sprintf("%s?q=%s&appid=%s&units=%s", baseURL, city, apiKey, units)
-   resp, err := httpClient.Get(url)
+	url := fmt.Sprintf("%s?q=%s&appid=%s&units=%s", baseURL, city, apiKey, units)
+	resp, err := httpClient.Get(url)
 	if err != nil {
 		return 0, "", fmt.Errorf("failed to fetch weather: %w", err)
 	}
