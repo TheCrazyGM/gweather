@@ -52,7 +52,7 @@ func main() {
 				units = "metric"
 			}
 
-			temp, status, err := getWeather(apiKey, city, units)
+			temp, status, icon, err := getWeather(apiKey, city, units)
 			if err != nil {
 				return err
 			}
@@ -61,7 +61,7 @@ func main() {
 			if metric {
 				unit = "C"
 			}
-			fmt.Printf("%.1f°%s [ %s ]\n", temp, unit, status)
+			fmt.Printf("%.1f°%s [ %s %s ]\n", temp, unit, icon, status)
 			return nil
 		},
 	}
