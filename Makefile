@@ -1,4 +1,4 @@
-.PHONY: all clean install
+.PHONY: all clean install uninstall
 
 BINARY_NAME := gweather
 GO_BIN_DIR := $(shell go env GOPATH)/bin
