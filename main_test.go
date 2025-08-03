@@ -131,11 +131,16 @@ func TestMetricFlag(t *testing.T) {
 					if metric {
 						unit = "C"
 					}
-					cmd.Printf("%s %.1f°%s [ %s ]\n", icon, temp, unit, status)
+					if cmd.Flag("no-emoji") != nil && cmd.Flag("no-emoji").Changed {
+						cmd.Printf("%.1f°%s [ %s ]\n", temp, unit, status)
+					} else {
+						cmd.Printf("%s %.1f°%s [ %s ]\n", icon, temp, unit, status)
+					}
 				},
 			}
 
 			cmd.Flags().BoolVarP(&metric, "metric", "m", false, "Use metric units")
+			cmd.Flags().Bool("no-emoji", false, "Disable emoji icons in output")
 
 			output, err := executeCommand(cmd, tt.args...)
 			if err != nil {
@@ -183,7 +188,11 @@ func TestMissingAPIKey(t *testing.T) {
 			if metric {
 				unit = "C"
 			}
-			cmd.Printf("%s %.1f°%s [ %s ]\n", icon, temp, unit, status)
+			if cmd.Flag("no-emoji") != nil && cmd.Flag("no-emoji").Changed {
+				cmd.Printf("%.1f°%s [ %s ]\n", temp, unit, status)
+			} else {
+				cmd.Printf("%s %.1f°%s [ %s ]\n", icon, temp, unit, status)
+			}
 		},
 	}
 

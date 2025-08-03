@@ -19,6 +19,7 @@ func main() {
 
 	var metric bool
 	var apiKeyFlag string
+	var noEmoji bool
 	cmd := &cobra.Command{
 		Use:   "weather [city]",
 		Short: "Get the current weather for a specified city",
@@ -61,13 +62,18 @@ func main() {
 			if metric {
 				unit = "C"
 			}
-			fmt.Printf("%.1f°%s [ %s %s ]\n", temp, unit, icon, status)
+			if noEmoji {
+				fmt.Printf("%.1f°%s [ %s ]\n", temp, unit, status)
+			} else {
+				fmt.Printf("%.1f°%s [ %s %s ]\n", temp, unit, icon, status)
+			}
 			return nil
 		},
 	}
 
 	cmd.Flags().BoolVarP(&metric, "metric", "m", false, "Use metric units (default is imperial)")
 	cmd.Flags().StringVarP(&apiKeyFlag, "api-key", "k", "", "OpenWeather API key")
+	cmd.Flags().BoolVarP(&noEmoji, "no-emoji", "n", false, "Disable emoji icons in output")
 	if err := cmd.Execute(); err != nil {
 		fmt.Println("Error:", err)
 		os.Exit(1)

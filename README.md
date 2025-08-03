@@ -23,7 +23,6 @@ Before running the app, make sure you have the following:
    cd gweather
    ```
 
-
 3. (Optional) Create a `.env` file and add your OpenWeatherMap API key (or set the environment variable directly):
 
    ```
@@ -55,6 +54,7 @@ Replace `[city-name]` with the name of the city you want to get the weather for.
 ### Options
 
 - `-m, --metric`: Display temperature in Celsius (default is Fahrenheit)
+- `-n, --no-emoji`: Disable emoji icons in output (useful for non-UTF8 or legacy terminals)
 
 Note: API requests will time out after 10 seconds if the server does not respond.
 
@@ -68,6 +68,11 @@ Get weather in Fahrenheit:
 Get weather in Celsius:
 ```
 ./gweather -m "London"
+```
+
+Get weather with emoji disabled:
+```
+./gweather -n "Tokyo"
 ```
 
 The app will display the current temperature and weather conditions (e.g., Clear, Cloudy, Rain) for the specified city.
