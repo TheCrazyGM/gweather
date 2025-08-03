@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// main is the entry point for the weather CLI tool, handling argument parsing, environment variable loading, and output formatting to display the current weather for a specified city.
 func main() {
 	// Load .env file but ignore if it does not exist; warn on other errors
 	if err := godotenv.Load(); err != nil {
