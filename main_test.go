@@ -197,6 +197,7 @@ func TestMissingAPIKey(t *testing.T) {
 	}
 
 	cmd.Flags().BoolVarP(&metric, "metric", "m", false, "Use metric units")
+	cmd.Flags().Bool("no-emoji", false, "Disable emoji icons in output")
 
 	output, _ := executeCommand(cmd, "London")
 
