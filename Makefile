@@ -1,4 +1,6 @@
-.PHONY: all clean install
+# Makefile
+
+.PHONY: all clean install uninstall fmt test
 
 BINARY_NAME := gweather
 GO_BIN_DIR := $(shell go env GOPATH)/bin
@@ -16,3 +18,9 @@ install:
 
 uninstall:
 	rm -f $(GO_BIN_DIR)/$(BINARY_NAME)
+
+test:
+	go test ./...
+
+fmt:
+	gofmt -w .

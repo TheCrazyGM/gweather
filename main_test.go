@@ -68,7 +68,7 @@ func TestMetricFlag(t *testing.T) {
 	originalGetWeather := getWeather
 	defer func() { getWeather = originalGetWeather }()
 
-	getWeather = func(apiKey, city, units string) (float64, string, error) {
+	getWeather = func(apiKey, city, units string) (float64, string, string, error) {
 		// Validate units parameter is passed correctly
 		if city != "TestCity" {
 			t.Errorf("Expected city 'TestCity', got '%s'", city)
@@ -76,9 +76,9 @@ func TestMetricFlag(t *testing.T) {
 
 		// Return different temperature based on units
 		if units == "metric" {
-			return 20.0, "sunny", nil // Celsius
+			return 20.0, "sunny", "☀️", nil // Celsius
 		}
-		return 68.0, "sunny", nil // Fahrenheit (approximately 20°C)
+		return 68.0, "sunny", "☀️", nil // Fahrenheit (approximately 20°C)
 	}
 
 	// Set API key for tests
@@ -125,17 +125,22 @@ func TestMetricFlag(t *testing.T) {
 						units = "metric"
 					}
 
-					temp, status, _ := getWeather("test-api-key", city, units)
+					temp, status, icon, _ := getWeather("test-api-key", city, units)
 
 					unit := "F"
 					if metric {
 						unit = "C"
 					}
-					cmd.Printf("%.1f°%s [ %s ]\n", temp, unit, status)
+					if cmd.Flag("no-emoji") != nil && cmd.Flag("no-emoji").Changed {
+						cmd.Printf("%.1f°%s [ %s ]\n", temp, unit, status)
+					} else {
+						cmd.Printf("%s %.1f°%s [ %s ]\n", icon, temp, unit, status)
+					}
 				},
 			}
 
 			cmd.Flags().BoolVarP(&metric, "metric", "m", false, "Use metric units")
+			cmd.Flags().Bool("no-emoji", false, "Disable emoji icons in output")
 
 			output, err := executeCommand(cmd, tt.args...)
 			if err != nil {
@@ -177,17 +182,22 @@ func TestMissingAPIKey(t *testing.T) {
 				units = "metric"
 			}
 
-			temp, status, _ := getWeather(apiKey, city, units)
+			temp, status, icon, _ := getWeather(apiKey, city, units)
 
 			unit := "F"
 			if metric {
 				unit = "C"
 			}
-			cmd.Printf("%.1f°%s [ %s ]\n", temp, unit, status)
+			if cmd.Flag("no-emoji") != nil && cmd.Flag("no-emoji").Changed {
+				cmd.Printf("%.1f°%s [ %s ]\n", temp, unit, status)
+			} else {
+				cmd.Printf("%s %.1f°%s [ %s ]\n", icon, temp, unit, status)
+			}
 		},
 	}
 
 	cmd.Flags().BoolVarP(&metric, "metric", "m", false, "Use metric units")
+	cmd.Flags().Bool("no-emoji", false, "Disable emoji icons in output")
 
 	output, _ := executeCommand(cmd, "London")
 
