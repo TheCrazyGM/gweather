@@ -23,6 +23,7 @@ type WeatherData struct {
 	} `json:"weather"`
 }
 
+// getWeatherIcon returns an emoji representing the weather condition for a given OpenWeatherMap weather code.
 func getWeatherIcon(code int) string {
 	switch {
 	case code >= 200 && code < 300:
