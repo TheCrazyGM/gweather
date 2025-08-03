@@ -15,11 +15,13 @@ TestGetWeather	weather_test.go	/^func TestGetWeather(t *testing.T) {$/;"	f	packa
 TestGetWeatherNetworkError	weather_test.go	/^func TestGetWeatherNetworkError(t *testing.T) {$/;"	f	package:main
 TestMetricFlag	main_test.go	/^func TestMetricFlag(t *testing.T) {$/;"	f	package:main
 TestMissingAPIKey	main_test.go	/^func TestMissingAPIKey(t *testing.T) {$/;"	f	package:main
-Weather	weather.go	/^	Weather []struct {$/;"	m	struct:main.WeatherData	typeref:typename:[]struct { Description string `json:"description"`; }
+Weather	weather.go	/^	Weather []struct {$/;"	m	struct:main.WeatherData	typeref:typename:[]struct { Description string `json:"description"`; ID int `json:"id"`; }
 WeatherData	weather.go	/^type WeatherData struct {$/;"	s	package:main
 baseURL	weather.go	/^var baseURL = "http:\/\/api.openweathermap.org\/data\/2.5\/weather"$/;"	v	package:main
 executeCommand	main_test.go	/^func executeCommand(cmd *cobra.Command, args ...string) (string, error) {$/;"	f	package:main	typeref:typename:(string, error)
-getWeather	weather.go	/^var getWeather = func(apiKey, city, units string) (float64, string, error) {$/;"	v	package:main
+getWeather	weather.go	/^var getWeather = func(apiKey, city, units string) (float64, string, string, error) {$/;"	v	package:main
+getWeatherIcon	weather.go	/^func getWeatherIcon(code int) string {$/;"	f	package:main	typeref:typename:string
+httpClient	weather.go	/^var httpClient = &http.Client{Timeout: 10 * time.Second}$/;"	v	package:main
 main	main.go	/^func main() {$/;"	f	package:main
 main	main.go	/^package main$/;"	p
 main	main_test.go	/^package main$/;"	p
